@@ -50,6 +50,12 @@ class Request():
         groups = get_groups_by_guild(self.guild_id)
         return [group.name for group in groups]
 
+    def show_active_content(self):
+        self.show_content(self.user_id)
+
+    def show_content(self, user_id):
+        return get_active_content(user_id)
+
     
     #others
     def new_group(self, name):
@@ -75,10 +81,7 @@ class Request():
         group_id = get_member_by_id(get_active_id(self.user_id)).group_id
         delete_group(group_id)
 
-class Rpg():
-    def __init__(self):
-        self.Request = Request
-        
+
 if __name__ == "__main__":
     request = Request(123,789)
     print(request.create())
