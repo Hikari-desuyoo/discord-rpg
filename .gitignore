@@ -1,3 +1,4 @@
 /venv/
 /__pycache__/
 /all_games.db
+/token.txt

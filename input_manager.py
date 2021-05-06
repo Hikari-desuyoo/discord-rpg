@@ -3,6 +3,8 @@
 import json 
 from rpg_tools import Request
 
+
+
 prefix = "."
 
 #opens json with proper responses
@@ -64,6 +66,12 @@ class Commands():
 
 class Input_manager(Commands):
     def __init__(self):
+        #opens json with proper responses
+        with open("replies.json", "r") as f:
+            self.replies = json.loads(f.read())
+
+        self.prefix = "."
+         
         self.commands = {
             "new":self.new,
             "create":self.new,

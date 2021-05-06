@@ -1,19 +1,19 @@
 {
     "new":{
-        "explain":"Forma de usar: .new [nome_da_campanha]\nCria uma nova campanha no servidor.\nCampanhas atuais:**\"em progresso\"**",
-        "nametaken":"Já existe uma campanha neste servidor com esse nome",
-        "success":"Campanha [**self.new_group_name**] criada com sucesso"
+        "explain":"f\"Forma de usar: .new [nome_da_campanha]\"\nf\"Cria uma nova campanha no servidor.\"\nf\"Campanhas atuais:**\"em progresso\"**\"",
+        "nametaken":"f\"Já existe uma campanha neste servidor com esse nome\"",
+        "success":"f\"Campanha {**self.new_group_name**} criada com sucesso\""
     },
 
     "now":{
-        "show":"Atualmente você está com a campanha [**self.active_group**] selecionada.",
-        "show_empty":"Você não selecionou nenhuma campanha ainda. Selecione com .now [nome_da_campanha]",
-        "success":"Campanha [**self.wanted_group**] selecionada!",
-        "notmember":"Você não é membro dessa campanha. Peça para alguém digitar .add e te adicionar!",
-        "nogroup":"Não existe nenhuma campanha com o nome [**self.wanted_group**]"
+        "show":"f\"Atualmente você está com a campanha {**self.active_group**} selecionada.\"",
+        "show_empty":"f\"Você não selecionou nenhuma campanha ainda. Selecione com .now [nome_da_campanha]\"",
+        "success":"f\"Campanha {**self.wanted_group**} selecionada!\"",
+        "notmember":"f\"Você não é membro dessa campanha. Peça para alguém digitar .add e te adicionar!\"",
+        "nogroup":"f\"Não existe nenhuma campanha com o nome {**self.wanted_group**}\""
     },
 
     "add":{
-        "explain":"Forma de usar: .add [menção_de_usuário]\nAdiciona um jogador à campanha selecionada."
+        "explain":"f\"Forma de usar: .add [menção_de_usuário]\nAdiciona um jogador à campanha selecionada.\""
     }
 }
