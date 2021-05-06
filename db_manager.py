@@ -1,6 +1,8 @@
+#Provides functions for dealing with the database indirectly.
+
+import json
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import declarative_base, sessionmaker, relationship
-import json
 
 #initial json for rpg sheets
 start_content = "{}"
@@ -10,7 +12,6 @@ engine = create_engine('sqlite:///all_games.db', echo=False)
 Session = sessionmaker(bind=engine)
 session = Session()
 Base = declarative_base()
-
 
 #users-active_sheet relation table
 class User(Base):
@@ -88,12 +89,35 @@ def delete_member(member_id):
             raise Exception("Error removing deleted member's group")
     session.commit()
 
-def get_members(group_id):
+def get_member_by_id(member_id):
+    member = session.query(Member).filter_by(id=member_id).first()
+    return member
+
+def get_group_members(group_id):
     members = session.query(Member).filter_by(group_id=group_id).all()
     return members
 
 
 #group related
+def get_group_by_name(guild_id, group_name):
+    group = session.query(Group).filter_by(name=group_name, guild_id=guild_id).first()
+    return group
+
+def get_group_by_id(group_id):
+    group = session.query(Group).filter_by(id=group_id).first()
+    return group
+
+def get_active_group(user_id):
+    member_id = get_active_id(user_id)
+    if member_id == -1:
+        return
+    member = get_member_by_id(member_id)
+    return session.query(Group).filter_by(id=member.group_id).first()
+
+def get_groups_by_guild(guild_id):
+    groups = session.query(Group).filter_by(guild_id=guild_id).all()
+    return groups
+
 def create_group(group_name, creator_id, guild_id):
     get_or_create_user(creator_id)
     group = Group(name=group_name, guild_id=guild_id)
@@ -108,17 +132,27 @@ def delete_group(group_id):
     group = session.query(Group).filter_by(id=group_id).first()
     session.delete(group)
 
-    members = get_members(group_id)
+    members = get_group_members(group_id)
     for member in members:
         session.delete(member)
     session.commit()
 
 
-#content related
+#active member related
 def set_active_id(user_id, member_id):
     user = session.query(User).filter_by(user_id=user_id).first()
     user.active_member_id = member_id
     session.commit()
+
+def get_active_id(user_id):
+    user = session.query(User).filter_by(user_id=user_id).first()
+    member_id = user.active_member_id
+    return member_id
+
+def get_active_member(user_id):
+    member_id = get_active_id(user_id)
+    member = get_member_by_id(member_id) 
+    return member
 
 def get_active_content(user_id):
     user = get_or_create_user(user_id)
