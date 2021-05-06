@@ -108,6 +108,7 @@ def get_group_by_id(group_id):
     return group
 
 def get_active_group(user_id):
+    user = get_or_create_user(user_id)
     member_id = get_active_id(user_id)
     if member_id == -1:
         return
@@ -140,16 +141,17 @@ def delete_group(group_id):
 
 #active member related
 def set_active_id(user_id, member_id):
-    user = session.query(User).filter_by(user_id=user_id).first()
+    user = get_or_create_user(user_id)
     user.active_member_id = member_id
     session.commit()
 
 def get_active_id(user_id):
-    user = session.query(User).filter_by(user_id=user_id).first()
+    user = get_or_create_user(user_id)
     member_id = user.active_member_id
     return member_id
 
 def get_active_member(user_id):
+    user = get_or_create_user(user_id)
     member_id = get_active_id(user_id)
     member = get_member_by_id(member_id) 
     return member

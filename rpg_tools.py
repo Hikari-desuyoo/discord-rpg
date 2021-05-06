@@ -51,11 +51,10 @@ class Request():
         return [group.name for group in groups]
 
     def show_active_content(self):
-        self.show_content(self.user_id)
+        return self.show_content(self.user_id)
 
     def show_content(self, user_id):
         return get_active_content(user_id)
-
     
     #others
     def new_group(self, name):
@@ -65,6 +64,13 @@ class Request():
             return "success"
         else:
             return "nametaken"
+
+    def rename_group(self, old_name, new_name):
+        pass
+
+    def delete_group(self):
+        group_id = get_member_by_id(get_active_id(self.user_id)).group_id
+        delete_group(group_id)
 
     def add_user(self, new_user_id):
         create_member(new_user_id, get_active_group(self.user_id).id)
@@ -77,9 +83,6 @@ class Request():
         else:
             return "notingroup"
 
-    def delete_group(self):
-        group_id = get_member_by_id(get_active_id(self.user_id)).group_id
-        delete_group(group_id)
 
 
 if __name__ == "__main__":
