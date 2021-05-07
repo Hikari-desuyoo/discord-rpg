@@ -29,6 +29,7 @@ class Request():
     def quit_group(self):
         member_id = get_active_id(self.user_id)
         delete_member(member_id)
+        return "success"
 
     #methods for displaying data
     def show_active_group(self):

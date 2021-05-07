@@ -7,18 +7,28 @@ client = discord.Client()
 
 @client.event
 async def on_ready():
-    print(client.get_user(378628192581320706))
     print('Logged in as {0.user}'.format(client))
 
 #related to answer commands
-input_manager = Input_manager()
+input_manager = Input_manager(client)
 
 @client.event
 async def on_message(message):
     output = input_manager.process(message.content, message.author.id, message.guild.id)
+
     if output:
+        #formats username in ex: "=get_user=13131241=get_user=" -> "Hikari"
+        output_list = output.split('=get_user=')
+        final_output = ""
+        for i in range(len(output_list)):
+            if i%2 == 0:
+                final_output += output_list[i]
+            else:
+                #odd indexes means that substring was between '**'
+                final_output += str(await client.fetch_user(int(output_list[i])))
+
         final_msg = "```python\n"
-        final_msg += output
+        final_msg += final_output
         final_msg += "\n```"
         await message.channel.send(final_msg)
 

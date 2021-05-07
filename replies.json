@@ -1,19 +1,24 @@
 {
     "new":{
-        "explain":"f\"Forma de usar: .new [nome_da_campanha]\"\nf\"Cria uma nova campanha no servidor.\"\nf\"Campanhas atuais:**\"em progresso\"**\"",
-        "nametaken":"f\"Já existe uma campanha neste servidor com esse nome\"",
-        "success":"f\"Campanha {**self.new_group_name**} criada com sucesso\""
+        "explain":"**multiline_f**Forma de usar: .new [nome_da_campanha]**br**Cria uma nova campanha no servidor.**br**Campanhas atuais:**br**em progresso**multiline_f_end**",
+        "nametaken":"**multiline_f**Já existe uma campanha neste servidor com esse nome**multiline_f_end**",
+        "success":"**multiline_f**Campanha {**self.new_group_name**} criada com sucesso**multiline_f_end**"
     },
 
     "now":{
-        "show":"f\"Atualmente você está com a campanha {**self.active_group**} selecionada.\"",
-        "show_empty":"f\"Você não selecionou nenhuma campanha ainda. Selecione com .now [nome_da_campanha]\"",
-        "success":"f\"Campanha {**self.wanted_group**} selecionada!\"",
-        "notmember":"f\"Você não é membro dessa campanha. Peça para alguém digitar .add e te adicionar!\"",
-        "nogroup":"f\"Não existe nenhuma campanha com o nome {**self.wanted_group**}\""
+        "show":"**multiline_f**Atualmente {=get_user=**self.user_id**=get_user=} está com a campanha {**self.active_group**} selecionada.**multiline_f_end**",
+        "show_empty":"**multiline_f**{=get_user=**self.user_id**=get_user=} não selecionou nenhuma campanha ainda. Selecione com .now [nome_da_campanha]**multiline_f_end**",
+        "success":"**multiline_f**Campanha {**self.wanted_group**} selecionada!**multiline_f_end**",
+        "notmember":"**multiline_f**{=get_user=**self.user_id**=get_user=} não é membro dessa campanha. Peça para alguém digitar .add e te adicionar!**multiline_f_end**",
+        "nogroup":"**multiline_f**Não existe nenhuma campanha com o nome {**self.wanted_group**}**multiline_f_end**"
     },
 
     "add":{
-        "explain":"f\"Forma de usar: .add [menção_de_usuário]\nAdiciona um jogador à campanha selecionada.\""
+        "explain":"**multiline_f**Forma de usar: .add [menção_de_usuário]**br**Adiciona um jogador à campanha selecionada.**multiline_f_end**"
+    },
+    
+    "quit":{
+        "explain":"**multiline_f**Este comando tira você da campanha selecionada, removendo suas informações sobre a campanha**multiline_f_end**#Forma de usar: .quit quit**br**#É necessário digitar duas vezes por motivos de segurança.",
+        "success":"**multiline_f**{=get_user=**self.user_id**=get_user=} saiu da campanha {**self.left_group**}, e suas informações foram deletadas.**multiline_f_end**"
     }
 }
