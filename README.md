@@ -12,3 +12,6 @@
 
 ### main.py
 ##### Links the tools functionality to discord bot using Input_manager class
+
+##### TODO
+###### redo user formatting in support, since it's not safe and open to injections.
