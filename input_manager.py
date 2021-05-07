@@ -35,7 +35,7 @@ class Commands():
 
     #creates group
     def new(self, request, parameters):
-        if not parameters in [[],['']]:
+        if parameters:
             self.new_group_name = parameters[0]
             output = request.new_group(self.new_group_name)
         else:
@@ -45,7 +45,7 @@ class Commands():
 
     #sets active
     def now(self, request, parameters):
-        if not parameters in [[],['']]:
+        if parameters:
             self.wanted_group = parameters[0]
             output = request.set_active_group(self.wanted_group)
         else:
@@ -56,7 +56,7 @@ class Commands():
 
     #add member(in progress)
     def add(self, request, parameters):
-        if not parameters in [[],['']]:
+        if parameters:
             self.new_group_name = parameters[0]
             output = request.new_group(self.new_group_name)
         else:
@@ -65,7 +65,7 @@ class Commands():
         return self.get_reply("add", output)
 
     def quit(self, request, parameters):
-        if "quit" in parameters:
+        if parameters[0] == "quit":
             self.left_group = request.show_active_group()
             output = request.quit_group()
         else:
@@ -75,15 +75,10 @@ class Commands():
 
 
 class Input_manager(Commands):
-    def __init__(self, client):
-        #discord client
-        self.client = client
-
+    def __init__(self):
         #opens json with proper responses
         with open("replies.json", "r") as f:
             self.replies = json.loads(f.read())
-
-        self.prefix = "."
          
         self.commands = {
             "new":self.new,
@@ -100,31 +95,22 @@ class Input_manager(Commands):
             "add":self.add
         }
 
-    def process(self, message, user_id, guild_id):
-        if message.startswith(self.prefix):
-            request = Request(user_id, guild_id)
-            self.user_id = user_id
-            self.guild_id = guild_id
+    def process(self, command, args, user_id, guild_id):
+        request = Request(user_id, guild_id)
+        self.user_id = user_id
+        self.guild_id = guild_id
 
-            message = message[1:]#takes out prefix
-            message_list = message.split(" ")
+        parameters = args
 
-            command = message_list[0]
-            parameters = message_list[1:]
-
-            command_method = self.commands.get(command, None)
-            if command_method:
-                return command_method(request, parameters)
+        command_method = self.commands.get(command, None)
+        if command_method:
+            return command_method(request, parameters)
 
 
 
 if __name__ == "__main__":
-
-    import discord
-    client = discord.Client()
-
     #can be seem as an discord message emulator for debugging.
-    input_manager = Input_manager(client)
+    input_manager = Input_manager()
 
     user_id = 1
     guild_id = 1
@@ -137,6 +123,14 @@ if __name__ == "__main__":
             except:
                 print("wrong input for changing user")
         else:
-            processed = input_manager.process(message, user_id, guild_id)
-            print(processed) if processed else ""
+            if message.startswith('.'):
+                message_list = message[1:].split(" ")
+                command = message_list[0]
+                args = message_list[1:]
+                try:
+                    args.remove("")
+                except:
+                    pass
+                processed = input_manager.process(command, args, user_id, guild_id)
+                print(processed) if processed else ""
 
