@@ -1,24 +1,84 @@
 {
     "new":{
-        "explain":"**multiline_f**Forma de usar: .new [nome_da_campanha]**br**Cria uma nova campanha no servidor.**br**Campanhas atuais:**br**em progresso**multiline_f_end**",
-        "nametaken":"**multiline_f**Já existe uma campanha neste servidor com esse nome**multiline_f_end**",
-        "success":"**multiline_f**Campanha {**self.new_group_name**} criada com sucesso**multiline_f_end**"
+        "explain":
+        "**multiline_f**
+        Forma de usar: .new [nome_da_campanha]**br**
+        Cria uma nova campanha no servidor.**br**
+        **self.smart_format(self.replies['show']['groups']).replace(multiline_f,'').replace(multiline_f_end,'')**
+        **multiline_f_end**",
+
+        "nametaken":
+        "**multiline_f**
+        Já existe uma campanha neste servidor com esse nome
+        **multiline_f_end**",
+        "success":
+        "**multiline_f**
+        Campanha {**self.new_group_name**} 
+        criada com sucesso
+        **multiline_f_end**"
     },
 
     "now":{
-        "show":"**multiline_f**Atualmente {=get_user=**self.user_id**=get_user=} está com a campanha {**self.active_group**} selecionada.**multiline_f_end**",
-        "show_empty":"**multiline_f**{=get_user=**self.user_id**=get_user=} não selecionou nenhuma campanha ainda. Selecione com .now [nome_da_campanha]**multiline_f_end**",
-        "success":"**multiline_f**Campanha {**self.wanted_group**} selecionada!**multiline_f_end**",
-        "notmember":"**multiline_f**{=get_user=**self.user_id**=get_user=} não é membro dessa campanha. Peça para alguém digitar .add e te adicionar!**multiline_f_end**",
-        "nogroup":"**multiline_f**Não existe nenhuma campanha com o nome {**self.wanted_group**}**multiline_f_end**"
+        "show":
+        "**multiline_f**
+        Atualmente {**self.insert_user()**} está com a campanha {**self.active_group**} selecionada.
+        **multiline_f_end**",
+        "show_empty":
+        "**multiline_f**
+        {**self.insert_user()**} não selecionou nenhuma campanha ainda. 
+        #Selecione com .now [nome_da_campanha]
+        **multiline_f_end**",
+        "success":
+        "**multiline_f**
+        Campanha {**self.wanted_group**} selecionada!
+        **multiline_f_end**",
+        "notmember":
+        "**multiline_f**
+        {**self.insert_user()**} não é membro dessa campanha. 
+        Peça para alguém digitar .add e te adicionar!
+        **multiline_f_end**",
+        "nogroup":
+        "**multiline_f**
+        Não existe nenhuma campanha com o nome {**self.wanted_group**}
+        **multiline_f_end**"
     },
 
     "add":{
-        "explain":"**multiline_f**Forma de usar: .add [menção_de_usuário]**br**Adiciona um jogador à campanha selecionada.**multiline_f_end**"
+        "explain":
+        "**multiline_f**
+        Forma de usar: .add [menção_de_usuário]**br**Adiciona um jogador à campanha selecionada.
+        **multiline_f_end**"
+    },
+
+    "show":{
+        "explain":
+        "**multiline_f**
+        Mostra diversas informações sobre as campanhas
+        **multiline_f_end**",
+        "members":
+        "**multiline_f**
+        Membros da campanha selecionada:
+        **multiline_f**",
+        "groups":
+        "**multiline_f**
+        Campanhas em progresso:**br**
+        **'\\n'.join(str(count+1)+') {'+group+'}' for count, group in enumerate(self.request.show_all_groups()))**
+        **multiline_f_end**
+        "
     },
     
     "quit":{
-        "explain":"**multiline_f**Este comando tira você da campanha selecionada, removendo suas informações sobre a campanha**multiline_f_end**#Forma de usar: .quit quit**br**#É necessário digitar duas vezes por motivos de segurança.",
-        "success":"**multiline_f**{=get_user=**self.user_id**=get_user=} saiu da campanha {**self.left_group**}, e suas informações foram deletadas.**multiline_f_end**"
+        "explain":
+        "**multiline_f**
+        Este comando tira você da campanha selecionada, 
+        removendo suas informações sobre a campanha
+        **multiline_f_end**
+        #Forma de usar: .quit quit**br**
+        #É necessário digitar duas vezes por motivos de segurança.",
+        "success":
+        "**multiline_f**
+        {**self.insert_user()**} saiu da campanha {**self.left_group**}, 
+        e suas informações foram deletadas.
+        **multiline_f_end**"
     }
 }

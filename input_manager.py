@@ -26,12 +26,43 @@ class Commands():
                 final_string += str(eval(string_list[i]))
         return final_string
 
+    def insert_user(self, user_id=False):
+        if not user_id:
+            user_id = self.user_id
+        
+        return f"=get_user={user_id}=get_user="
+
     def get_reply(self, command_key, reply_key):
         reply_string = self.replies[command_key][reply_key]
         return self.smart_format(reply_string)
 
 
     #commands
+
+    #displays data
+    def show(self, request, parameters):
+        show_parameters_dict = {
+            "membros":"members",
+            "membro":"members",
+
+            "grupos":"groups",
+            "campanhas":"groups",
+            "campanha":"groups",
+            "camp":"groups",
+        }
+
+        if parameters:
+            output = show_parameters_dict.get(parameters[0], None)
+            if not output and parameters[0] in show_parameters_dict.values():
+                output = parameters[0]
+            if not output:
+                output = "explain"
+
+        else:
+            output = "explain"
+
+        
+        return self.get_reply("show", output)
 
     #creates group
     def new(self, request, parameters):
@@ -64,6 +95,7 @@ class Commands():
 
         return self.get_reply("add", output)
 
+    #exits group
     def quit(self, request, parameters):
         if parameters[0] == "quit":
             self.left_group = request.show_active_group()
@@ -78,25 +110,39 @@ class Input_manager(Commands):
     def __init__(self):
         #opens json with proper responses
         with open("replies.json", "r") as f:
-            self.replies = json.loads(f.read())
+            json_string = f.read()
+
+        #this is for allowing breaking lines on json file
+        json_string = json_string.replace("\n        ","")
+        self.replies = json.loads(json_string)
          
         self.commands = {
+            "novo":self.new,
+            "criar":self.new,
             "new":self.new,
             "create":self.new,
 
             "quit":self.quit,
             "exit":self.quit,
+            "sair":self.quit,
 
             "now":self.now,
             "select":self.now,
             "sel":self.now,
             "s":self.now,
+            "selecionar":self.now,
+            "ativar":self.now,
+            "jogar":self.now,
+            "play":self.now,
+
+            "show":self.show,
+            "mostrar":self.show,
 
             "add":self.add
         }
 
     def process(self, command, args, user_id, guild_id):
-        request = Request(user_id, guild_id)
+        self.request = Request(user_id, guild_id)
         self.user_id = user_id
         self.guild_id = guild_id
 
@@ -104,7 +150,7 @@ class Input_manager(Commands):
 
         command_method = self.commands.get(command, None)
         if command_method:
-            return command_method(request, parameters)
+            return command_method(self.request, parameters)
 
 
 

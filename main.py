@@ -30,7 +30,11 @@ for command_name in input_manager.commands.keys():
                 if i%2 == 0:
                     final_output += output_list[i]
                 else:
-                    final_output += str(await bot.fetch_user(int(output_list[i])))
+                    try:
+                        final_output += str(await bot.fetch_user(int(output_list[i])))
+                    except:
+                        #avoids crashing by injection
+                        final_output += output_list[i]
 
             final_msg = "```python\n"
             final_msg += final_output
