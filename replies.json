@@ -4,9 +4,8 @@
         "**multiline_f**
         Forma de usar: .new [nome_da_campanha]**br**
         Cria uma nova campanha no servidor.**br**
-        **self.smart_format(self.replies['show']['groups']).replace(multiline_f,'').replace(multiline_f_end,'')**
+        **self.get_show('groups')**
         **multiline_f_end**",
-
         "nametaken":
         "**multiline_f**
         Já existe uma campanha neste servidor com esse nome
@@ -26,8 +25,10 @@
         "show_empty":
         "**multiline_f**
         {**self.insert_user()**} não selecionou nenhuma campanha ainda. 
+        **multiline_f_end**
         #Selecione com .now [nome_da_campanha]
-        **multiline_f_end**",
+        "
+        ,
         "success":
         "**multiline_f**
         Campanha {**self.wanted_group**} selecionada!
@@ -46,24 +47,68 @@
     "add":{
         "explain":
         "**multiline_f**
-        Forma de usar: .add [menção_de_usuário]**br**Adiciona um jogador à campanha selecionada.
+        **self.get_show('members')**
+        **multiline_f_end**
+        #Forma de usar: .add [menção_de_usuário]**br**Adiciona um jogador à campanha selecionada.
+        ",
+        "notmention":
+        "**multiline_f**
+        {Erro} Você deve mencionar o usuário que você quer adicionar
+        **multiline_f_end**",
+        "now_empty":
+        "**multiline_f**
+        **self.get_show('now_empty')**
+        **multiline_f_end**",
+        "success":
+        "**multiline_f**
+        Você adicionou **self.insert_user(self.added_user_id)** na campanha **self.active_group**!
         **multiline_f_end**"
+
+    },
+
+    "delete":{
+        "explain":
+        "**multiline_f**
+        **self.get_show('members')**
+        **multiline_f_end**
+        #Forma de usar: .remove [menção_de_usuário]**br**Remove o jogador da campanha selecionada.
+        ",
+        "notmention":
+        "**multiline_f**
+        {Erro} Você deve mencionar o usuário que você quer remover.
+        **multiline_f_end**",
+        "notingroup":
+        "**multiline_f**
+        {Erro} Essa pessoa não está na campanha
+        **multiline_f_end**",
+        "now_empty":
+        "**multiline_f**
+        **self.get_show('now_empty')**
+        **multiline_f_end**",
+        "success":
+        "**multiline_f**
+        Você removeu **self.insert_user(self.removed_user_id)** da campanha **self.active_group**, e sua ficha foi deletada.
+        **multiline_f_end**"
+
     },
 
     "show":{
-        "explain":
-        "**multiline_f**
-        Mostra diversas informações sobre as campanhas
-        **multiline_f_end**",
+        "comment":
+        "This is not used directly by the python scripts",
         "members":
-        "**multiline_f**
-        Membros da campanha selecionada:
-        **multiline_f**",
+        "
+        Membros da campanha selecionada:**br**
+        **self.show_members()**
+        ",
         "groups":
-        "**multiline_f**
+        "
         Campanhas em progresso:**br**
-        **'\\n'.join(str(count+1)+') {'+group+'}' for count, group in enumerate(self.request.show_all_groups()))**
-        **multiline_f_end**
+        **self.show_groups()**
+        ",
+        "now_empty":
+        "
+        {**self.insert_user()**} não selecionou nenhuma campanha ainda. **br**
+        #Selecione com .now [nome_da_campanha]
         "
     },
     

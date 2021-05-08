@@ -21,6 +21,7 @@ for command_name in input_manager.commands.keys():
         command = ctx.invoked_with
 
         output = input_manager.process(command, args, user_id, guild_id)
+        
 
         if output:
             #formats username as in ex: "=get_user=13131241=get_user=" -> "Hikari"

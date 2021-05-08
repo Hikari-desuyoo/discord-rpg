@@ -40,11 +40,17 @@ class Request():
             return False
 
     def show_group_members(self, group_name):
-        members = get_group_members(get_group_by_name(self.guild_id, group_name).id)
+        group = get_group_by_name(self.guild_id, group_name)
+        if not group:
+            return "nogroup"
+        members = get_group_members(group.id)
         return members   
-        
+
     def show_active_group_members(self):
-        members = get_group_members(get_active_group(self.user_id).id)
+        group = get_active_group(self.user_id)
+        if not group:
+            return "nogroup"
+        members = get_group_members(group.id)
         return members
 
     def show_all_groups(self):
@@ -74,20 +80,28 @@ class Request():
         delete_group(group_id)
 
     def add_user(self, new_user_id):
-        create_member(new_user_id, get_active_group(self.user_id).id)
+        group = get_active_group(self.user_id)
+        if not group:
+            return "now_empty"
+        create_member(new_user_id, group.id)
+        return "success"
 
-    def delete_user(self, delete_user_id):
-        get_active_member(delete_user_id)
-        if member:
-            delete_member(member_id)
-            return success
-        else:
-            return "notingroup"
+    def delete_member(self, delete_user_id):
+        member = get_active_member(delete_user_id)
+        members = self.show_active_group_members()
+        if members == "nogroup":
+            return "now_empty"
+        for member in members:
+            if member.user_id == delete_user_id:
+                member_id = member.id
+                delete_member(member_id)
+                return "success"
+            
+        return "notingroup"
 
 
 
 if __name__ == "__main__":
     request = Request(123,789)
-    print(request.create())
 
 

@@ -4,8 +4,7 @@ import asyncio
 import json 
 from rpg_tools import Request
 
-#contains methods for each command
-class Commands():
+class Formatting():
     #formats strings like "example 1+1=**1+1**"
     def smart_format(self, target_string):
         #variables for confusing discord python highlight to be used by the json
@@ -36,35 +35,30 @@ class Commands():
         reply_string = self.replies[command_key][reply_key]
         return self.smart_format(reply_string)
 
+#commands to display info, strongly linked to replies.json
+class Show_commands():
+    def get_show(self, key):
+        #made to be used from inside replies.json or Show class
+        return self.smart_format(self.replies['show'][key])
 
-    #commands
-
-    #displays data
-    def show(self, request, parameters):
-        show_parameters_dict = {
-            "membros":"members",
-            "membro":"members",
-
-            "grupos":"groups",
-            "campanhas":"groups",
-            "campanha":"groups",
-            "camp":"groups",
-        }
-
-        if parameters:
-            output = show_parameters_dict.get(parameters[0], None)
-            if not output and parameters[0] in show_parameters_dict.values():
-                output = parameters[0]
-            if not output:
-                output = "explain"
-
-        else:
-            output = "explain"
-
+    def show_groups(self):
+        all_groups = self.request.show_all_groups()
+        group_string_list = [f"{count+1}) {{{group}}}" for count, group in enumerate(all_groups)]
+        group_string = '\n'.join(group_string_list)
+        return group_string
         
-        return self.get_reply("show", output)
+    def show_members(self):
+        member_list = self.request.show_active_group_members()
+        if member_list == "nogroup":
+            return self.get_show("now_empty")
 
-    #creates group
+        final_string = ''
+        for member_obj in member_list:
+            sheet_info = "Em progresso"
+            final_string += f"\n{{{self.insert_user(member_obj.user_id)}}} - {sheet_info}"
+        return final_string
+
+class Group_management():
     def new(self, request, parameters):
         if parameters:
             self.new_group_name = parameters[0]
@@ -85,19 +79,36 @@ class Commands():
 
         return self.get_reply("now", output)
 
-    #add member(in progress)
+    #add member
     def add(self, request, parameters):
+        output = "explain"
         if parameters:
-            self.new_group_name = parameters[0]
-            output = request.new_group(self.new_group_name)
-        else:
-            output = "explain"
-
+            output = "notmention"
+            user_id = self.validate_mention(parameters[0])
+            if user_id:
+                self.added_user_id = user_id
+                self.active_group = request.show_active_group()
+                output = self.request.add_user(user_id)
+            
         return self.get_reply("add", output)
+
+
+    #remove member
+    def remove(self, request, parameters):
+        output = "explain"
+        if parameters:
+            output = "notmention"
+            user_id = self.validate_mention(parameters[0])
+            if user_id:
+                self.removed_user_id = user_id
+                self.active_group = request.show_active_group()
+                output = self.request.delete_member(user_id)
+            
+        return self.get_reply("delete", output)
 
     #exits group
     def quit(self, request, parameters):
-        if parameters[0] == "quit":
+        if parameters and parameters[0] == "quit":
             self.left_group = request.show_active_group()
             output = request.quit_group()
         else:
@@ -105,6 +116,23 @@ class Commands():
 
         return self.get_reply("quit", output)
 
+class Sheet_management():
+    pass
+
+#wraps command classes
+class Commands(Formatting, Show_commands, Group_management, Sheet_management):
+    def validate_mention(self, mention_string):
+        #mention_string is expected to be <@!23132131321>
+        invalid_mention = True
+        user_mention = mention_string.replace("<@!","").replace(">","")
+        if user_mention.isdigit() and mention_string.startswith("<@!") and mention_string.endswith(">"):
+            user_id = int(user_mention)
+            invalid_mention = False
+        
+        if invalid_mention:
+            return False
+        else:
+            return user_id
 
 class Input_manager(Commands):
     def __init__(self):
@@ -117,10 +145,15 @@ class Input_manager(Commands):
         self.replies = json.loads(json_string)
          
         self.commands = {
+            #group management
             "novo":self.new,
             "criar":self.new,
             "new":self.new,
             "create":self.new,
+            "grupo":self.new,
+            "group":self.new,
+            "grupos":self.new,
+            "groups":self.new,
 
             "quit":self.quit,
             "exit":self.quit,
@@ -135,10 +168,15 @@ class Input_manager(Commands):
             "jogar":self.now,
             "play":self.now,
 
-            "show":self.show,
-            "mostrar":self.show,
+            "add":self.add,
+            "member":self.add,
+            "membro":self.add,
+            "members":self.add,
+            "membros":self.add,
 
-            "add":self.add
+            "remove":self.remove,
+            "del":self.remove,
+            "ban":self.remove
         }
 
     def process(self, command, args, user_id, guild_id):
