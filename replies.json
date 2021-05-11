@@ -98,6 +98,56 @@
 
     },
 
+    "create_sheet":{
+        "already_created":
+        "**multiline_f**
+        Você já criou uma ficha. Para criar de novo, delete a existente.
+        **multiline_f_end**
+        #Para deletar a sua ficha, digite .f delete",
+        "success":
+        "**multiline_f**
+        Você acabou de criar uma ficha com o nome **self.sheet_name**.
+        Para saber como editar a ficha, digite .help ficha
+        **multiline_f_end**",
+        "explain":
+        "**multiline_f**
+        Esse comando cria uma ficha na campanha selecionada, caso você não tenha uma.
+        Forma de usar: .ficha \"Nome da ficha\"
+        **multiline_f_end**"
+
+    },
+
+    "add_sheet":{
+        "no_sheet":
+        "**multiline_f** 
+        Você não tem uma ficha!**br**
+        Crie uma com o comando .ficha \"nome do personagem\"
+        **multiline_f_end**",
+        "no_path":
+        "**multiline_f** 
+        Esse diretório não existe.
+        **multiline_f_end**",
+        "raw_explain":
+        "**multiline_f** 
+        Insere dados puros no diretório especificado.**br**
+        Exemplo: .info \"Porrete\" \"inventario/objetos\"
+        **multiline_f_end**",
+        "field_explain":
+        "**multiline_f** 
+        Insere uma pasta nova na ficha, embaixo do diretório especificado.
+        Exemplo: .pasta \"magias\" \"habilidades/sobrenaturais\"
+        **multiline_f_end**",
+        "kv_explain":
+        "**multiline_f** 
+        Insere uma relação no diretório especificado.**br**
+        Exemplo: .ligar \"Cor do cabelo\" \"Rosa\" \"aparência/cabelo\"
+        **multiline_f_end**",
+        "success":
+        "**multiline_f** 
+        ELemento criado!
+        **multiline_f_end**"
+    },
+
     "show":{
         "comment":
         "This is not used directly by the python scripts",
@@ -115,7 +165,16 @@
         "
         {**self.insert_user()**} não selecionou nenhuma campanha ainda. **br**
         #Selecione com .now [nome_da_campanha]
+        ",
+        "sheet":
         "
+        **self.show_sheet()**
+        "
+    },
+
+    "see_sheet":{
+        "no_sheet":"**self.smart_format(self.replies['add_sheet']['no_sheet'])**",
+        "show":"**self.get_show('sheet')**"
     },
     
     "quit":{

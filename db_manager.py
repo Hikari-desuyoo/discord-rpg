@@ -5,7 +5,7 @@ from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import declarative_base, sessionmaker, relationship
 
 #initial json for rpg sheets
-start_content = ""
+start_content = "[]"
 
 #starts db for all rpg games
 engine = create_engine('sqlite:///all_games.db', echo=False)
@@ -166,6 +166,9 @@ def get_active_content(user_id):
         return json.loads(member.content)
     else:
         return
+
+def load_active_content(member_obj):
+    return json.loads(member_obj.content)
 
 def set_active_content(user_id, content_dict):
     user = get_or_create_user(user_id)

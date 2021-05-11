@@ -54,9 +54,22 @@ class Show_commands():
 
         final_string = ''
         for member_obj in member_list:
-            sheet_info = json.loads(member_obj.content).name if member_obj.content!="" else "Sem ficha"
+            sheet = self.request.load_sheet_by_member(member_obj)
+            
+            sheet_info = sheet.name if sheet else "Sem ficha"
 
             final_string += f"\n{{{self.insert_user(member_obj.user_id)}}} - {sheet_info}"
+        return final_string
+
+    def show_sheet(self):
+        items_list = self.path_contents
+        final_string = items_list[0]+'\n'#searched path
+        item_type_list = ["Folders","Raw","Kv"]
+        for i, items in enumerate(items_list[1:]):
+            final_string += (("-"*30)+item_type_list[i]+"\n") if items else ""
+            for item in items:
+                final_string += item+"\n"
+
         return final_string
 
 class Group_management():
@@ -118,7 +131,80 @@ class Group_management():
         return self.get_reply("quit", output)
 
 class Sheet_management():
-    pass
+    def create_sheet(self, request, parameters):
+        sheet = self.request.load_active_sheet()
+        if sheet:
+            output = "already_created"
+        elif parameters:
+            self.sheet_name = parameters[0]
+            self.request.create_active_sheet(self.sheet_name)
+            output = "success"
+        else:
+            output = "explain"
+
+        return self.get_reply("create_sheet", output)
+
+    def create_field(self, request, parameters):
+        if parameters:
+            sheet = self.request.load_active_sheet()
+            if sheet:
+                field_name = parameters[0]
+                path = parameters[1] if len(parameters)>=2 else ""
+                output = sheet.add_field(field_name, path)
+                request.save_active_sheet(sheet)
+            else:
+                output = "no_sheet"
+        else:
+            output = "field_explain"
+
+        return self.get_reply("add_sheet", output)
+        
+
+    def create_raw(self, request, parameters):
+        if parameters:
+            sheet = self.request.load_active_sheet()
+            if sheet:
+                raw_data = parameters[0]
+                path = parameters[1] if len(parameters)>=2 else ""
+                output = sheet.add_raw(raw_data, path)
+                request.save_active_sheet(sheet)
+            else:
+                output = "no_sheet"
+        else:
+            output = "raw_explain"
+
+        return self.get_reply("add_sheet", output)
+
+    def create_kv(self, request, parameters):
+        if len(parameters)>=2:
+            sheet = self.request.load_active_sheet()
+            if sheet:
+                key = parameters[0]
+                value = parameters[1]
+                path = parameters[2] if len(parameters)>=3 else ""
+                output = sheet.add_dict_kv(key, value, path)
+                request.save_active_sheet(sheet)
+            else:
+                output = "no_sheet"
+        else:
+            output = "kv_explain"
+
+        return self.get_reply("add_sheet", output)
+
+    def see_sheet(self, request, parameters):
+        sheet = self.request.load_active_sheet()
+        if sheet:
+            path = parameters[0] if parameters else ""
+            self.path_contents = sheet.get_display_info(path)
+            output = "show"
+        else:
+            output = "no_sheet"
+        
+        
+
+        return self.get_reply("see_sheet", output)
+
+
 
 #wraps command classes
 class Commands(Formatting, Show_commands, Group_management, Sheet_management):
@@ -177,7 +263,27 @@ class Input_manager(Commands):
 
             "remove":self.remove,
             "del":self.remove,
-            "ban":self.remove
+            "ban":self.remove,
+
+            "sheet":self.create_sheet,
+            "ficha":self.create_sheet,
+
+            "pasta":self.create_field,
+            "field":self.create_field,
+            "folder":self.create_field,
+            "f":self.create_field,
+
+            "info":self.create_raw,
+            "raw":self.create_raw,
+            "i":self.create_raw,
+
+            "ligar":self.create_kv,
+            "link":self.create_kv,
+            "kv":self.create_kv,
+
+            "see":self.see_sheet,
+            "ver":self.see_sheet,
+            "s":self.see_sheet
         }
 
     def process(self, command, args, user_id, guild_id):

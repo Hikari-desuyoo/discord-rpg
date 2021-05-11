@@ -1,6 +1,5 @@
 #Provides a class to deal with the sheets stored in the data base and its format
 #information explaining sheet's format in readme
-import json
 from unidecode import unidecode
 
 
@@ -73,19 +72,22 @@ class Field():
         return f"[Field]{self.name}"
 
 class Sheet(Field):
-    def __init__(self, sheet_json_string):
-        sheet_list = json.loads(sheet_json_string)
+    def __init__(self, sheet_list = None):
+        if not sheet_list:
+            sheet_list = ["Unknown",{}]
         Field.__init__(self, sheet_list)
 
-    def get_sheet_json(self):
+    def get_sheet(self):
         sheet_dict = self.get_field_dict()
-        sheet_json = json.dumps(sheet_dict)
-        return sheet_json
+        return sheet_dict
 
-    def get_display_info(self, path_string):
+    def format_path(self, path):
+        return path.split("/") if path else []
+
+    def get_display_info(self, path=""):
         #gets more or less user ready information from current path
-        info_list = [path_string]
-        path = path_string.split("/") if path_string else []
+        info_list = [path]
+        path = self.format_path(path)
         field = self.get_field(path)
 
         if not field:
@@ -95,24 +97,31 @@ class Sheet(Field):
         info_list.append([f"{key}: {value}" for key, value in field.sheet_dict.items()])
         return info_list
 
-    def add_raw(self, data, path=[]):
+    def add_raw(self, data, path=""):
+        path = self.format_path(path)
         field = self.get_field(path)
         if not field:
-            return
+            return "no_path"
         field.raw_data.append(data)
         return "success"
 
-    def add_dict_kv(self, key, value, path=[]):
+    def add_dict_kv(self, key, value, path=""):
+        path = self.format_path(path)
         field = self.get_field(path)
         if not field:
-            return
+            return "no_path"
         field.sheet_dict[key] = value
         return "success"
 
-    def add_field(self, name, path=[]):
+    def add_field(self, name, path=""):
+        path = self.format_path(path)
         field = self.get_field(path)
         if not field:
-            return
+            return "no_path"
         field.fields[name] = Field([name,{}])
         return "success"
+
+    def search(self, path=""):
+        path = self.format_path(path)
+        return Sheet.search(self, path=path)
 

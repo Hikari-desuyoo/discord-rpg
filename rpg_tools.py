@@ -1,6 +1,7 @@
 #Provides a class with all methods from rolling dices to storing sheets.(in progress)
 
 from db_manager import *
+from sheet_manager import Sheet
 
 class Request():
     def __init__(self, user_id, guild_id):
@@ -57,11 +58,39 @@ class Request():
         groups = get_groups_by_guild(self.guild_id)
         return [group.name for group in groups]
 
-    def show_active_content(self):
-        return self.show_content(self.user_id)
-
-    def show_content(self, user_id):
+    def get_content(self, user_id):
         return get_active_content(user_id)
+
+    def get_active_content(self):
+        return self.get_content(self.user_id)
+
+    def set_active_content(self, content_dict):
+        set_active_content(self.user_id, content_dict)
+
+
+    #sheet
+    def load_sheet_by_member(self, member_obj):#
+        content = load_active_content(member_obj)
+        if not content:
+            return None
+        else:
+            return Sheet(content)
+
+    def load_active_sheet(self):
+        content = self.get_active_content()
+        if not content:
+            return None
+        else:
+            return Sheet(content)
+
+    def save_active_sheet(self, sheet):
+        sheet_dict = sheet.get_sheet()
+        self.set_active_content(sheet_dict)
+    
+    def create_active_sheet(self, name):
+        sheet = Sheet()
+        sheet.name = name
+        self.save_active_sheet(sheet)
     
     #others
     def new_group(self, name):
