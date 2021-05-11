@@ -54,7 +54,8 @@ class Show_commands():
 
         final_string = ''
         for member_obj in member_list:
-            sheet_info = "Em progresso"
+            sheet_info = json.loads(member_obj.content).name if member_obj.content!="" else "Sem ficha"
+
             final_string += f"\n{{{self.insert_user(member_obj.user_id)}}} - {sheet_info}"
         return final_string
 
@@ -88,7 +89,7 @@ class Group_management():
             if user_id:
                 self.added_user_id = user_id
                 self.active_group = request.show_active_group()
-                output = self.request.add_user(user_id)
+                output = self.request.add_member(user_id)
             
         return self.get_reply("add", output)
 
@@ -143,7 +144,7 @@ class Input_manager(Commands):
         #this is for allowing breaking lines on json file
         json_string = json_string.replace("\n        ","")
         self.replies = json.loads(json_string)
-         
+        
         self.commands = {
             #group management
             "novo":self.new,

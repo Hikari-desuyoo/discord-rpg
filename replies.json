@@ -51,6 +51,12 @@
         **multiline_f_end**
         #Forma de usar: .add [menção_de_usuário]**br**Adiciona um jogador à campanha selecionada.
         ",
+        "already_exist":
+        "
+        **multiline_f**
+        {Erro}Este usuário já está na campanha.
+        **multiline_f_end**
+        ",
         "notmention":
         "**multiline_f**
         {Erro} Você deve mencionar o usuário que você quer adicionar

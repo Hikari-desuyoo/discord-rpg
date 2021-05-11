@@ -79,10 +79,16 @@ class Request():
         group_id = get_member_by_id(get_active_id(self.user_id)).group_id
         delete_group(group_id)
 
-    def add_user(self, new_user_id):
+    def add_member(self, new_user_id):
         group = get_active_group(self.user_id)
         if not group:
             return "now_empty"
+        members = self.show_group_members(group.name)
+        for member in members:
+            if new_user_id == member.user_id:
+                return "already_exist"
+                
+
         create_member(new_user_id, group.id)
         return "success"
 

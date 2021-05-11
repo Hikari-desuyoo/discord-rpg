@@ -5,7 +5,7 @@ from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import declarative_base, sessionmaker, relationship
 
 #initial json for rpg sheets
-start_content = "{}"
+start_content = ""
 
 #starts db for all rpg games
 engine = create_engine('sqlite:///all_games.db', echo=False)
