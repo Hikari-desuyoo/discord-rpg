@@ -63,13 +63,29 @@ class Show_commands():
 
     def show_sheet(self):
         items_list = self.path_contents
-        final_string = items_list[0]+'\n'#searched path
-        item_type_list = ["Folders","Raw","Kv"]
+        final_string = "Atualmente em: /"+items_list[0]+'\n'#searched path
+        item_type_list = ["{Pastas}","{Info}","{Ligações}"]
         for i, items in enumerate(items_list[1:]):
-            final_string += (("-"*30)+item_type_list[i]+"\n") if items else ""
+            final_string += (item_type_list[i]+"\n") if items else ""
             for item in items:
-                final_string += item+"\n"
+                final_string += "*"+item+"\n"
 
+        return final_string
+
+    def show_sheet_search(self):
+        final_string = "Resultados da pesquisa:\n"
+        sheet_types = {
+            "name":"Pasta",
+            "raw":"Info",
+            "key":"Ligação - Chave",
+            "value":"Ligação - Valor"
+        }
+        if self.sheet_results:
+            #each result is a Result object
+            for result in self.sheet_results:
+                final_string += f"{{{sheet_types[result.type]}}}\'{result.content}\' em {'/'.join(result.path)}\n"
+        else:
+            final_string = "Sem resultados."
         return final_string
 
 class Group_management():
@@ -174,7 +190,7 @@ class Sheet_management():
             output = "raw_explain"
 
         return self.get_reply("add_sheet", output)
-
+    
     def create_kv(self, request, parameters):
         if len(parameters)>=2:
             sheet = self.request.load_active_sheet()
@@ -191,6 +207,75 @@ class Sheet_management():
 
         return self.get_reply("add_sheet", output)
 
+    def del_kv(self, request, parameters):
+        if len(parameters)>=2:
+            sheet = self.request.load_active_sheet()
+            if sheet:
+                key = parameters[0]
+                value = parameters[1]
+                path = parameters[2] if len(parameters)>=3 else ""
+                output = sheet.del_dict_kv(key, path)
+                request.save_active_sheet(sheet)
+            else:
+                output = "no_sheet"
+        else:
+            output = "kv_explain"
+
+        return self.get_reply("del_sheet", output)
+
+    def del_raw(self, request, parameters):
+        if parameters:
+            sheet = self.request.load_active_sheet()
+            if sheet:
+                raw_data = parameters[0]
+                path = parameters[1] if len(parameters)>=2 else ""
+                output = sheet.del_raw(raw_data, path)
+                request.save_active_sheet(sheet)
+            else:
+                output = "no_sheet"
+        else:
+            output = "raw_explain"
+
+        return self.get_reply("del_sheet", output)
+
+    def del_field(self, request, parameters):
+        if parameters:
+            sheet = self.request.load_active_sheet()
+            if sheet:
+                field_name = parameters[0]
+                path = parameters[1] if len(parameters)>=2 else ""
+                output = sheet.del_field(field_name, path)
+                request.save_active_sheet(sheet)
+            else:
+                output = "no_sheet"
+        else:
+            output = "field_explain"
+
+        return self.get_reply("del_sheet", output)
+
+    def sheet_del(self, request, parameters):
+        commands = {
+            "kv":self.del_kv,
+            "ligar":self.del_kv,
+            "link":self.del_kv,
+
+            "raw":self.del_raw,
+            "info":self.del_raw,
+            "i":self.del_raw,
+
+            "field":self.del_field,
+            "pasta":self.del_field,
+            "f":self.del_field
+        }
+        if parameters:
+            command = commands.get(parameters[0], None)
+        else:
+            command = None
+        if command:
+            return command(request, parameters[1:])
+        else:
+            return self.get_reply("del_sheet", "explain")
+
     def see_sheet(self, request, parameters):
         sheet = self.request.load_active_sheet()
         if sheet:
@@ -199,10 +284,22 @@ class Sheet_management():
             output = "show"
         else:
             output = "no_sheet"
-        
-        
 
         return self.get_reply("see_sheet", output)
+    
+    def search_sheet(self, request, parameters):
+        sheet = self.request.load_active_sheet()
+        if sheet:
+            if parameters:
+                self.sheet_results = sheet.search(parameters[0])
+                output = "show"
+            else:
+                output = "explain"
+        else:
+            output = "no_sheet"
+
+        return self.get_reply("search_sheet", output)
+
 
 
 
@@ -249,7 +346,6 @@ class Input_manager(Commands):
             "now":self.now,
             "select":self.now,
             "sel":self.now,
-            "s":self.now,
             "selecionar":self.now,
             "ativar":self.now,
             "jogar":self.now,
@@ -283,7 +379,12 @@ class Input_manager(Commands):
 
             "see":self.see_sheet,
             "ver":self.see_sheet,
-            "s":self.see_sheet
+
+            "s":self.search_sheet,
+            "search":self.search_sheet,
+            "achar":self.search_sheet,
+
+            "del":self.sheet_del
         }
 
     def process(self, command, args, user_id, guild_id):

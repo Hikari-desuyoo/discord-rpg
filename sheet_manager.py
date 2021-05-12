@@ -97,6 +97,7 @@ class Sheet(Field):
         info_list.append([f"{key}: {value}" for key, value in field.sheet_dict.items()])
         return info_list
 
+    #adding elements
     def add_raw(self, data, path=""):
         path = self.format_path(path)
         field = self.get_field(path)
@@ -121,7 +122,42 @@ class Sheet(Field):
         field.fields[name] = Field([name,{}])
         return "success"
 
-    def search(self, path=""):
+    #deleting elements
+    def del_raw(self, data, path=""):
         path = self.format_path(path)
-        return Sheet.search(self, path=path)
+        field = self.get_field(path)
+        if not field:
+            return "no_path"
+        try:
+            field.raw_data.remove(data)
+            return "success"
+        except:
+            return "no_data"
+
+    def del_dict_kv(self, key, path=""):
+        path = self.format_path(path)
+        field = self.get_field(path)
+        if not field:
+            return "no_path"
+        success = field.sheet_dict.pop(key)
+        if success:
+            return "success"
+        else:
+            return "no_element"
+
+    def del_field(self, name, path=""):
+        path = self.format_path(path)
+        field = self.get_field(path)
+        if not field:
+            return "no_path"
+        success = field.fields.pop(name, None)
+        if success:
+            return "success"
+        else:
+            return "no_element"
+
+
+    def search(self, keyword, path=""):
+        path = self.format_path(path)
+        return Field.search(self, keyword, path=path)
 

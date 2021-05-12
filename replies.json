@@ -118,10 +118,9 @@
     },
 
     "add_sheet":{
-        "no_sheet":
-        "**multiline_f** 
-        Você não tem uma ficha!**br**
-        Crie uma com o comando .ficha \"nome do personagem\"
+        "no_sheet":        
+        "**multiline_f**
+        **self.get_show('no_sheet')**
         **multiline_f_end**",
         "no_path":
         "**multiline_f** 
@@ -148,6 +147,45 @@
         **multiline_f_end**"
     },
 
+    "del_sheet":{
+        "no_sheet":        
+        "**multiline_f**
+        **self.get_show('no_sheet')**
+        **multiline_f_end**",
+        "no_path":
+        "**multiline_f** 
+        Esse diretório não existe.
+        **multiline_f_end**",
+        "raw_explain":
+        "**multiline_f** 
+        Deleta dados puros no diretório especificado.**br**
+        Exemplo: .del info \"Porrete\" \"inventario/objetos\"
+        **multiline_f_end**",
+        "field_explain":
+        "**multiline_f** 
+        Deleta uma pasta da ficha, embaixo do diretório especificado.
+        Exemplo: .del pasta \"magias\" \"habilidades/sobrenaturais\"
+        **multiline_f_end**",
+        "kv_explain":
+        "**multiline_f** 
+        Deleta uma relação no diretório especificado.**br**
+        Exemplo: .del ligar \"Cor do cabelo\" \"Rosa\" \"aparência/cabelo\"
+        **multiline_f_end**",
+        "explain":
+        "**multiline_f** 
+        Deleta elementos em geral
+        Exemplo: .del info \"alguma coisa\"
+        **multiline_f_end**",
+        "no_data":
+        "**multiline_f** 
+        Não foi possivel encontrar a informação para deletar
+        **multiline_f_end**",
+        "success":
+        "**multiline_f** 
+        Elemento deletado!
+        **multiline_f_end**"
+    },
+
     "show":{
         "comment":
         "This is not used directly by the python scripts",
@@ -166,15 +204,40 @@
         {**self.insert_user()**} não selecionou nenhuma campanha ainda. **br**
         #Selecione com .now [nome_da_campanha]
         ",
+        "no_sheet":
+        "
+        Você não tem uma ficha!**br**
+        Crie uma com o comando .ficha \"nome do personagem\"
+        ",
         "sheet":
-        "
+        "**multiline_f** 
         **self.show_sheet()**
-        "
+        **multiline_f_end**",
+        "search_sheet":
+        "**multiline_f** 
+        **self.show_sheet_search()**
+        **multiline_f_end**"
     },
 
     "see_sheet":{
-        "no_sheet":"**self.smart_format(self.replies['add_sheet']['no_sheet'])**",
+        "no_sheet":        
+        "**multiline_f**
+        **self.get_show('no_sheet')**
+        **multiline_f_end**",
         "show":"**self.get_show('sheet')**"
+    },
+
+    "search_sheet":{
+        "no_sheet":        
+        "**multiline_f**
+        **self.get_show('no_sheet')**
+        **multiline_f_end**",
+        "show":"**self.get_show('search_sheet')**",
+        "explain":
+        "**multiline_f**
+        Usado para procurar elementos na ficha. **br**
+        Exemplo: .s \"cor do\"
+        **multiline_f_end**"
     },
     
     "quit":{
